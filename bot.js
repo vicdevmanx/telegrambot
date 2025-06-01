@@ -54,16 +54,18 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. Help without show
                 Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
                 'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
             }
-        }).then(response => {
+        }).then( async response => {
             console.log('-----------------bot request made')
             console.log(response.data.choices[0].message.content)
-            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
-            console.log('---------dooonnneee')
             response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
+            await axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
+            console.log('---------dooonnneee')
         }
-        ).catch(err =>
+        ).catch(async err => {
             console.log(err)
-        )
+            await axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: `Hi ${username}! we are currently not available, try again later!` });
+
+        })
 }
 
 app.get("/", (req, res) => {
