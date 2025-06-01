@@ -20,10 +20,11 @@ app.get("/", (req, res) => {
 })
 
 app.post("/webhook/telegram", async (req, res) => {
+    console.log(result)
     const {ok, result } = req.body
-    const id = result[result.length-1].message.from.id
-    const msg = result[result.length-1].message.text
-    sendMsg(id, msg)
+    // const id = result[result.length-1].message.from.id
+    // const msg = result[result.length-1].message.text
+    // sendMsg(id, msg)
     res.status(200).send('OK');
 })
 
