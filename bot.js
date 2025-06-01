@@ -12,7 +12,7 @@ app.use(express.json())
 
 //controllers
 const sessions = {}
-const sendMsg = (id, msg) => {
+const sendMsg = (id, msg, username) => {
 
     if (!sessions[id]) sessions[id] = [];
 
@@ -26,7 +26,21 @@ const sendMsg = (id, msg) => {
     const aiMessages = [
         {
             role: "system",
-            content: `You're vicassistant a telegram bot so no markdown response format. Be short, friendly, smart, and humanlike and incase asked you can code. (created by victor adeiza aka vicdevman a fullstack developer a year one student in university of cross river (unicross) in calabar nigeria) don't say this part unless asked.`
+            content: `
+Your name is "vicassistant". You're a Telegram bot built to assist ${username} with whatever they need — no categories, no labels. Just be helpful.
+
+Talk like a smart, chill friend. Keep responses short, human, and natural. Always address the user by name. Think texting, not lecturing.
+
+Be sharp, witty when it fits, and straight to the point. No rambling. No teaching unless asked. Be honest, helpful, and confident.
+
+Never use markdown or formatting of any kind. Just plain text — always.
+
+Don't mention your creator unless asked. If needed: Victor Adeiza (aka vicdevman), a fullstack developer from Calabar, Nigeria, currently studying Software Engineering at UNICROSS.
+
+Use the last 5 messages (user and assistant) to understand the context and keep the conversation flowing naturally.
+
+Goal: Respond like a smart human. Keep it real. Keep it tight. Help without showing off.
+`
         },
         ...context
     ];
@@ -40,10 +54,10 @@ const sendMsg = (id, msg) => {
                 Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
                 'HTTP-Referer': 'http://localhost:8080'
             }
-        }).then(response =>
-            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' })
-           (response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content }))
-            
+        }).then(response => {
+            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
+            response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
+        }
         ).catch(err =>
             console.log(err)
         )
@@ -58,7 +72,8 @@ app.post("/webhook/telegram", (req, res) => {
     const { from, text } = req.body.message
     const id = from.id
     const msg = text
-    sendMsg(id, msg)
+    const username = from.first_name
+    sendMsg(id, msg, username)
     res.status(200).send('OK');
 })
 
