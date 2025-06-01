@@ -12,4 +12,6 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
 console.log(`bot running on 127.0.0.1:${PORT}`)
-})
+});
+
+export default app
