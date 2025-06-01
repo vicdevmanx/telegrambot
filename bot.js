@@ -55,7 +55,8 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. Help without show
                 'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
             }
         }).then(response => {
-            console.log(response)
+            console.log('-----------------bot request made')
+            console.log(response.data.choices[0].message.content)
             axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
             response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
         }
@@ -70,7 +71,7 @@ app.get("/", (req, res) => {
 
 app.post("/webhook/telegram", (req, res) => {
     console.log(req.body)
-    const { from, text } = req.body.message
+    const { from, text } = req?.body?.message || req.body.edited_message
     const id = from.id
     const msg = text
     const username = from.first_name
