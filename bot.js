@@ -45,22 +45,25 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. Help without show
         ...context
     ];
 
-    axios.post("https://openrouter.ai/api/v1/chat/completions", {
-        model: "google/gemma-2b-it",
-        messages: aiMessages
-    },
-        {
-            headers: {
-                Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
-                'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
-            }
-        }).then(response => {
-            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
-            response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
-        }
-        ).catch(err =>
-            console.log(err)
-        )
+    // axios.post("https://openrouter.ai/api/v1/chat/completions", {
+    //     model: "google/gemma-2b-it",
+    //     messages: aiMessages
+    // },
+    //     {
+    //         headers: {
+    //             Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
+    //             'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
+    //         }
+    //     }).then(response => {
+    //         axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
+    //         response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
+    //     }
+    //     ).catch(err =>
+    //         console.log(err)
+    //     )
+
+     axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: msg || 'sorry try again later!' });
+           
 }
 
 app.get("/", (req, res) => {
