@@ -52,7 +52,7 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. Help without show
         {
             headers: {
                 Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
-                'HTTP-Referer': 'http://localhost:8080'
+                'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
             }
         }).then(response => {
             axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
