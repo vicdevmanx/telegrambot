@@ -74,13 +74,13 @@ app.get("/", (req, res) => {
     res.status(200).json({ message: "welcome to vicassistant bot!" })
 })
 
-app.post("/webhook/telegram", (req, res) => {
+app.post("/webhook/telegram", async (req, res) => {
     console.log(req.body)
     const { from, text } = req?.body?.message || req.body.edited_message
     const id = from.id
     const msg = text
     const username = from.first_name
-    sendMsg(id, msg, username)
+    await sendMsg(id, msg, username)
     res.status(200).send('OK');
 })
 
