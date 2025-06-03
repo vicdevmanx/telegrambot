@@ -73,9 +73,9 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
             axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
             console.log('---------dooonnneee')
         }
-        ).catch(async err => {
+        ).catch(err => {
             console.log(err)
-            await axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: `Hi ${username}! we are currently not available, try again later!` });
+            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: `Hi ${username}! we are currently not available, try again later!` });
 
         })
 
