@@ -14,6 +14,18 @@ app.use(express.json())
 const sessions = {}
 const sendMsg = (id, msg, username) => {
 
+}
+
+app.get("/", (req, res) => {
+    res.status(200).json({ message: "welcome to vicassistant bot!" })
+})
+
+app.post("/webhook/telegram", async (req, res) => {
+    console.log(req.body)
+    const { from, text } = req?.body?.message || req.body.edited_message
+    const id = from.id
+    const msg = text
+    const username = from.first_name
     if (!sessions[id]) sessions[id] = [];
 
     // Push user message
@@ -45,7 +57,7 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
         ...context
     ];
 
-    axios.post("https://openrouter.ai/api/v1/chat/completions", {
+    await axios.post("https://openrouter.ai/api/v1/chat/completions", {
         model: "google/gemma-2b-it",
         messages: aiMessages
     },
@@ -54,11 +66,11 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
                 Authorization: `Bearer ${process.env.OPEN_ROUTER_KEY}`,
                 'HTTP-Referer': 'https://telegrambot-rho-nine.vercel.app'
             }
-        }).then( async response => {
+        }).then(response => {
             console.log('-----------------bot request made')
             console.log(response.data.choices[0].message.content)
             response?.data?.choices[0]?.message?.content && sessions[id].push({ role: 'assistant', content: response.data.choices[0].message.content })
-            await axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
+            axios.post(`${process.env.TELEGRAM_BASE_URL}/sendMessage`, { chat_id: id, text: response?.data?.choices[0]?.message?.content || 'sorry try again later!' });
             console.log('---------dooonnneee')
         }
         ).catch(async err => {
@@ -68,19 +80,6 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
         })
 
         console.log(sessions[id])
-}
-
-app.get("/", (req, res) => {
-    res.status(200).json({ message: "welcome to vicassistant bot!" })
-})
-
-app.post("/webhook/telegram", async (req, res) => {
-    console.log(req.body)
-    const { from, text } = req?.body?.message || req.body.edited_message
-    const id = from.id
-    const msg = text
-    const username = from.first_name
-    await sendMsg(id, msg, username)
     res.status(200).send('OK');
 })
 
