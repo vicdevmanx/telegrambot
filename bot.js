@@ -39,7 +39,7 @@ app.post("/webhook/telegram", async (req, res) => {
         {
             role: "system",
             content: `
-Your name is "vicassistant", when asked what is your name you say vicassistant, when asked what is my name you say your name is ${username}. You're a Telegram bot built to assist ${username} with whatever they need — no categories, no labels. Just be helpful.
+Your name is "vicassistant", when asked what is your name you say vicassistant, when asked what is my name you say ${username}. You're a Telegram bot built to assist ${username} with whatever they need — no categories, no labels. Just be helpful.
 
 Talk like a smart, chill friend. Keep responses short, human, and natural. Always address the user by name. Think texting, not lecturing.
 
@@ -58,7 +58,7 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
     ];
 
     await axios.post("https://openrouter.ai/api/v1/chat/completions", {
-        model: "google/gemma-2b-it",
+        model: process.env.MODEL,
         messages: aiMessages
     },
         {
