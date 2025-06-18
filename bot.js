@@ -94,3 +94,8 @@ Goal: Respond like a smart human. Keep it real. Keep it tight. keep it short. He
     // Final response to Telegram (fast)
     res.sendStatus(200);
 });
+
+
+app.listen(PORT, () => {
+    console.log(`bot running on 127.0.0.1:${PORT}`)
+});
